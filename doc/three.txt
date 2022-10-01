@@ -1,0 +1,229 @@
+*three.txt*
+*Three* *three* *three.nvim*
+--------------------------------------------------------------------------------
+CONTENTS                                                          *three-contents*
+
+  1. Options...................................................|three-options|
+  2. Bufferline api.....................................|three-bufferline-api|
+  3. Windows api...........................................|three-windows-api|
+  4. Projects api.........................................|three-projects-api|
+
+--------------------------------------------------------------------------------
+OPTIONS                                                            *three-options*
+
+>
+    require("three").setup({
+      bufferline = {
+        enabled = true,
+        icon = {
+          -- Tab left/right dividers
+          -- Set to this value for fancier, more "tab-looking" tabs
+          -- dividers = { " ", " " },
+          dividers = { "▍", "" },
+          -- Scroll indicator icons when buffers exceed screen width
+          scroll = { "«", "»" },
+          -- Pinned buffer icon
+          pin = "車",
+        },
+        -- When true, only show buffers that are inside the current directory
+        -- This can be toggled on a per-tab basis with toggle_scope_by_dir()
+        scope_by_directory = true,
+      },
+      windows = {
+        enabled = true,
+        -- Constant or function to calculate the minimum window width of the focused window
+        winwidth = function(winid)
+          local bufnr = vim.api.nvim_win_get_buf(winid)
+          return math.max(vim.api.nvim_buf_get_option(bufnr, "textwidth"), 80)
+        end,
+        -- Constant or function to calculate the minimum window height of the focused window
+        winheight = 10,
+      },
+      projects = {
+        enabled = true,
+        -- Name of file to store the project directory cache
+        filename = "projects.json",
+        -- When true, automatically add directories entered as projects
+        -- If false, you will need to manually call add_project()
+        autoadd = true,
+        -- List of lua patterns. If any match the directory, it will be allowed as a project
+        allowlist = {},
+        -- List of lua patterns. If any match the directory, it will be ignored as a project
+        blocklist = {},
+        -- Return true to allow a directory as a project
+        filter_dir = function(dir)
+          return true
+        end,
+      },
+    })
+<
+
+--------------------------------------------------------------------------------
+BUFFERLINE API                                              *three-bufferline-api*
+
+save_state(): any                                               *three.save_state*
+    Get the saved state of the bufferline
+
+
+restore_state({state})                                       *three.restore_state*
+    Restore the previously saved state
+
+    Parameters:
+      {state} `any`
+
+get_relative_buffer({bufnr}, {opts}): nil|integer      *three.get_relative_buffer*
+
+    Parameters:
+      {bufnr} `integer`
+      {opts}  `table`
+          {delta} `nil|integer`
+          {wrap}  `nil|boolean`
+
+next({opts})                                                          *three.next*
+
+    Parameters:
+      {opts} `table`
+          {delta} `nil|integer`
+          {wrap}  `nil|boolean`
+
+prev({opts})                                                          *three.prev*
+
+    Parameters:
+      {opts} `table`
+          {delta} `nil|integer`
+          {wrap}  `nil|boolean`
+
+move_buffer({position})                                        *three.move_buffer*
+
+    Parameters:
+      {position} `integer`
+
+move_buffer_relative({opts})                          *three.move_buffer_relative*
+
+    Parameters:
+      {opts} `table`
+          {delta} `nil|integer`
+          {wrap}  `nil|boolean`
+
+move_right({opts})                                              *three.move_right*
+
+    Parameters:
+      {opts} `table`
+          {delta} `nil|integer`
+          {wrap}  `nil|boolean`
+
+move_left({opts})                                                *three.move_left*
+
+    Parameters:
+      {opts} `table`
+          {delta} `nil|integer`
+          {wrap}  `nil|boolean`
+
+next_tab({opts})                                                  *three.next_tab*
+
+    Parameters:
+      {opts} `table`
+          {delta} `nil|integer`
+          {wrap}  `nil|boolean`
+
+prev_tab({opts})                                                  *three.prev_tab*
+
+    Parameters:
+      {opts} `table`
+          {delta} `nil|integer`
+          {wrap}  `nil|boolean`
+
+jump_to({idx})                                                     *three.jump_to*
+
+    Parameters:
+      {idx} `integer`
+
+close_buffer({bufnr}, {force})                                *three.close_buffer*
+
+    Parameters:
+      {bufnr} `nil|integer`
+      {force} `nil|boolean`
+
+toggle_pin()                                                    *three.toggle_pin*
+    Toggle the pinned status of the current buffer
+
+
+set_pinned({bufnrs}, {pinned})                                  *three.set_pinned*
+    Set the pinned status of a buffer or buffers
+
+    Parameters:
+      {bufnrs} `integer|integer[]`
+      {pinned} `boolean`
+
+clone_tab()                                                      *three.clone_tab*
+    Clone the current tab into a new tab
+
+
+smart_close()                                                  *three.smart_close*
+    Close the current window or buffer
+
+
+close_all_buffers({filter}, {force})                     *three.close_all_buffers*
+
+    Parameters:
+      {filter} `nil|fun(state: three.BufferState): boolean`
+      {force}  `nil|boolean`
+
+hide_all_buffers({filter})                                *three.hide_all_buffers*
+
+    Parameters:
+      {filter} `nil|fun(state: three.BufferState): boolean`
+
+hide_buffer({bufnr})                                           *three.hide_buffer*
+    Hide the buffer from the current tab
+
+    Parameters:
+      {bufnr} `nil|integer`
+
+toggle_scope_by_dir(): boolean                         *three.toggle_scope_by_dir*
+
+
+set_scope_by_dir({scope_by_dir})                          *three.set_scope_by_dir*
+
+    Parameters:
+      {scope_by_dir} `boolean`
+
+--------------------------------------------------------------------------------
+WINDOWS API                                                    *three-windows-api*
+
+toggle_win_resize(): boolean                             *three.toggle_win_resize*
+
+
+set_win_resize({new_enabled})                               *three.set_win_resize*
+
+    Parameters:
+      {new_enabled} `boolean`
+
+--------------------------------------------------------------------------------
+PROJECTS API                                                  *three-projects-api*
+
+add_project({project})                                         *three.add_project*
+
+    Parameters:
+      {project} `string`
+
+remove_project({project})                                   *three.remove_project*
+
+    Parameters:
+      {project} `nil|string`
+
+select_project({opts}, {callback})                          *three.select_project*
+
+    Parameters:
+      {opts}     `table` See :help vim.ui.select
+      {callback} `fun(project: nil|string)`
+
+open_project({project})                                       *three.open_project*
+
+    Parameters:
+      {project} `nil|string`
+
+list_projects(): string[]                                    *three.list_projects*
+
+================================================================================
+vim:tw=80:ts=2:ft=help:norl:syntax=help:
