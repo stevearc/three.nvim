@@ -8,6 +8,21 @@ M.join = function(...)
   return table.concat({ ... }, M.sep)
 end
 
+M.is_absolute = function(path)
+  if M.is_windows then
+    return path:lower():match('^%w:')
+  else
+    return vim.startswith(path, '/')
+  end
+end
+
+M.abspath = function(path)
+  if not M.is_absolute(path) then
+    path = vim.fn.fnamemodify(path, ':p')
+  end
+  return path
+end
+
 ---@return nil|integer
 M.tbl_index = function(tbl, needle)
   for i, v in ipairs(tbl) do
@@ -49,7 +64,12 @@ end
 ---@param candidate string
 ---@return boolean
 M.is_subdir = function(root, candidate)
-  return candidate ~= "" and candidate:sub(0, root:len()) == root
+  if candidate == "" then
+    return false
+  end
+  root = M.abspath(root)
+  candidate = M.abspath(candidate)
+  return candidate:sub(1, root:len()) == root
 end
 
 ---@param winid integer
