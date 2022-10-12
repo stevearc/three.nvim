@@ -60,6 +60,9 @@ local function set_winlayout_data(layout)
 end
 
 local function balance(sections, extra, key)
+  if vim.tbl_isempty(sections) then
+    return
+  end
   local min_val
   local second_min
   local min_count = 0
