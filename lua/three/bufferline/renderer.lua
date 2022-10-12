@@ -151,7 +151,9 @@ local function add_padding(buf_data, width)
         width = width - 1
       end
     end
-    while not vim.tbl_isempty(by_size) and (by_size[1].width - by_size[1].min_width) == MAX_PADDING do
+    while
+      not vim.tbl_isempty(by_size) and (by_size[1].width - by_size[1].min_width) == MAX_PADDING
+    do
       table.remove(by_size, 1)
     end
     iter = iter + 1

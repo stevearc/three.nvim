@@ -10,15 +10,15 @@ end
 
 M.is_absolute = function(path)
   if M.is_windows then
-    return path:lower():match('^%w:')
+    return path:lower():match("^%w:")
   else
-    return vim.startswith(path, '/')
+    return vim.startswith(path, "/")
   end
 end
 
 M.abspath = function(path)
   if not M.is_absolute(path) then
-    path = vim.fn.fnamemodify(path, ':p')
+    path = vim.fn.fnamemodify(path, ":p")
   end
   return path
 end

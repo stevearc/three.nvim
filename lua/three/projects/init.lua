@@ -125,7 +125,8 @@ end
 ---@param callback fun(project: nil|string)
 M.select_project = function(opts, callback)
   load()
-  opts = vim.tbl_extend("keep", opts or {}, { prompt = "Select project", format_item = format_project })
+  opts =
+    vim.tbl_extend("keep", opts or {}, { prompt = "Select project", format_item = format_project })
   vim.ui.select(projects, opts, callback)
 end
 
@@ -149,7 +150,11 @@ M.open_project = function(project)
     for _, winid in ipairs(vim.api.nvim_tabpage_list_wins(0)) do
       if vim.api.nvim_win_is_valid(winid) then
         local bufnr = vim.api.nvim_win_get_buf(winid)
-        if vim.bo[bufnr].buflisted and vim.bo[bufnr].buftype == "" and vim.api.nvim_buf_get_name(bufnr) ~= "" then
+        if
+          vim.bo[bufnr].buflisted
+          and vim.bo[bufnr].buftype == ""
+          and vim.api.nvim_buf_get_name(bufnr) ~= ""
+        then
           is_tab_empty = false
           break
         end
