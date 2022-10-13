@@ -357,10 +357,13 @@ local function get_fallback_buffer(tabpage, bufnr)
   end
 
   if replacement == bufnr then
-    return nil
-  else
-    return replacement
+    replacement = nil
   end
+  if replacement == nil then
+    replacement = vim.api.nvim_create_buf(false, true)
+    vim.api.nvim_buf_set_option(replacement, "bufhidden", "wipe")
+  end
+  return replacement
 end
 
 ---@param tabpage integer
