@@ -45,10 +45,17 @@ local function set_winlayout_data(layout)
       set_winlayout_data(v)
       winfixwidth = winfixwidth or v[2].winfixwidth
       winfixheight = winfixheight or v[2].winfixheight
-      min_width = min_width + v[2].min_width
-      min_height = min_height + v[2].min_height
-      width = width + v[2].width
-      height = height + v[2].height
+      if type == "row" then
+        min_width = min_width + v[2].min_width
+        min_height = math.max(min_height, v[2].min_height)
+        width = width + v[2].width
+        height = math.max(height, v[2].height)
+      else
+        min_width = math.max(min_width, v[2].min_width)
+        min_height = min_height + v[2].min_height
+        width = math.max(width, v[2].width)
+        height = height + v[2].height
+      end
     end
     layout[2].winfixwidth = winfixwidth
     layout[2].winfixheight = winfixheight
@@ -134,7 +141,7 @@ local function set_dimensions(layout)
       end
     else
       -- Adjust the height for the split borders
-      sections.height = sections.height - #sections
+      sections.height = sections.height - (#sections - 1)
       local flex = {}
       for _, v in ipairs(sections) do
         if not v[2].winfixheight then
