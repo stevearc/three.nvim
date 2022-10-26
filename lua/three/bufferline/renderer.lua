@@ -30,13 +30,13 @@ end
 
 local function format_buffer(buf_data)
   local pieces = {}
-  table.insert(pieces, hl("TabLineDivider" .. buf_data.status))
+  local mod = buf_data.is_modified and "Modified" or ""
+  table.insert(pieces, hl("TabLineDivider" .. mod .. buf_data.status))
   table.insert(pieces, config.icon.dividers[1])
   local padding = buf_data.width - buf_data.min_width
+  table.insert(pieces, hl("TabLineIndex" .. mod .. buf_data.status))
   table.insert(pieces, string.rep(" ", math.ceil(padding / 2)))
-  table.insert(pieces, hl("TabLineIndex" .. buf_data.status))
   table.insert(pieces, buf_data.prefix)
-  local mod = buf_data.is_modified and "Modified" or ""
   table.insert(pieces, hl("TabLine" .. mod .. buf_data.status))
   table.insert(pieces, buf_data.name)
   table.insert(pieces, buf_data.suffix)
