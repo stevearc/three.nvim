@@ -11,6 +11,7 @@ local M = {}
 ---@class three.TabState
 ---@field buffers integer[]
 ---@field buf_info table<integer, three.BufferState>
+---@field scope_by_directory boolean
 
 ---@class three.BufferState
 ---@field bufnr integer
@@ -127,8 +128,9 @@ end
 
 ---@param tabpage integer
 ---@param bufnr integer
+---@param sort nil|boolean
 ---@return boolean
-local function add_buffer(tabpage, bufnr)
+local function add_buffer(tabpage, bufnr, sort)
   if bufnr == 0 then
     bufnr = vim.api.nvim_get_current_buf()
   end
@@ -140,7 +142,9 @@ local function add_buffer(tabpage, bufnr)
   ts.buf_info[bufnr] = {
     bufnr = bufnr,
   }
-  apply_sorting()
+  if sort or sort == nil then
+    apply_sorting()
+  end
   return true
 end
 
@@ -406,11 +410,11 @@ end
 M.toggle_pin = function()
   local ts = tabstate[0]
   local bufnr = vim.api.nvim_get_current_buf()
+  local pinned = false
   if ts.buf_info[bufnr] then
-    ts.buf_info[bufnr].pinned = not ts.buf_info[bufnr].pinned
-    apply_sorting()
-    util.rerender()
+    pinned = ts.buf_info[bufnr].pinned
   end
+  M.set_pinned({ bufnr }, not pinned)
 end
 
 ---Set the pinned status of a buffer or buffers
@@ -423,6 +427,13 @@ M.set_pinned = function(bufnrs, pinned)
   end
   for _, bufnr in ipairs(bufnrs) do
     if ts.buf_info[bufnr] then
+      ts.buf_info[bufnr].pinned = pinned
+      if not pinned and not should_display(0, bufnr) then
+        remove_buffer_from_tabstate(0, bufnr)
+      end
+    elseif pinned then
+      -- We're pinning a buffer we haven't added to the display yet
+      add_buffer(0, bufnr, false)
       ts.buf_info[bufnr].pinned = pinned
     end
   end
