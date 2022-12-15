@@ -5,9 +5,9 @@ on: [push, pull_request]
 jobs:
   luacheck:
     name: Luacheck
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     steps:
-      - uses: actions/checkout@v1
+      - uses: actions/checkout@v3
 
       - name: Prepare
         run: |
@@ -21,12 +21,12 @@ jobs:
 
   stylua:
     name: StyLua
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - name: Stylua
-        uses: JohnnyMorganz/stylua-action@1.0.0
+        uses: JohnnyMorganz/stylua-action@v1
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
-          version: v0.14.3
+          version: v0.15.2
           args: --check .
