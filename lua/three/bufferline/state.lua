@@ -42,6 +42,7 @@ local tabstate_meta = {
 
 ---@type table<integer, three.TabState>
 local tabstate = setmetatable({}, tabstate_meta)
+local frozen = false
 
 ---Get the saved state of the bufferline
 ---@return any
@@ -547,21 +548,25 @@ M.create_autocmds = function(group)
     pattern = "*",
     group = group,
     callback = function(params)
-      touch_buffer(params.buf)
+      if not frozen then
+        touch_buffer(params.buf)
+      end
     end,
   })
   vim.api.nvim_create_autocmd("OptionSet", {
     pattern = "buflisted",
     group = group,
     callback = function(params)
-      touch_buffer(params.buf)
+      if not frozen then
+        touch_buffer(params.buf)
+      end
     end,
   })
   vim.api.nvim_create_autocmd("BufDelete", {
     pattern = "*",
     group = group,
     callback = function(params)
-      if remove_buffer_from_tabstates(params.buf) then
+      if not frozen and remove_buffer_from_tabstates(params.buf) then
         util.rerender()
       end
     end,
@@ -606,6 +611,12 @@ M.set_scope_by_dir = function(scope_by_dir)
     end
   end
   util.rerender()
+end
+
+---@private
+---@param freeze boolean
+M.set_freeze = function(freeze)
+  frozen = freeze
 end
 
 return setmetatable(M, {
