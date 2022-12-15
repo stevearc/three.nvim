@@ -165,7 +165,16 @@ local function resize_windows()
   local layout = vim.fn.winlayout()
   set_winlayout_data(layout)
   layout[2].width = vim.o.columns
-  layout[2].height = vim.o.lines - vim.o.cmdheight - 1 -- The 1 is for the statusline
+  local editor_height = vim.o.lines - vim.o.cmdheight
+  if vim.o.showtabline == 2 or (vim.o.showtabline == 1 and #vim.api.nvim_list_tabpages() > 1) then
+    editor_height = editor_height - 1
+  end
+  if
+    vim.o.laststatus >= 2 or (vim.o.laststatus == 1 and #vim.api.nvim_tabpage_list_wins(0) > 1)
+  then
+    editor_height = editor_height - 1
+  end
+  layout[2].height = editor_height
   set_dimensions(layout)
 end
 
