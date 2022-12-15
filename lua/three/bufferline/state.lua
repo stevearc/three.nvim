@@ -346,8 +346,16 @@ local function touch_buffer(bufnr)
     if add_buffer(0, bufnr) then
       util.rerender()
     end
-  elseif remove_buffer_from_tabstates(bufnr) then
-    util.rerender()
+  else
+    local ts = tabstate[0]
+    if
+      ts.buf_info[bufnr]
+      and not ts.buf_info[bufnr].pinned
+      -- only remove the buffer if it's not pinned
+      and remove_buffer_from_tabstates(bufnr)
+    then
+      util.rerender()
+    end
   end
 end
 
