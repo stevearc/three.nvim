@@ -13,6 +13,7 @@ These are _opinionated_ tools. They are designed for a specific workflow, and wi
 - [three.bufferline](#threebufferline)
   - [save_state()](#save_state)
   - [restore_state(state)](#restore_statestate)
+  - [is_buffer_in_any_tab(bufnr)](#is_buffer_in_any_tabbufnr)
   - [get_relative_buffer(bufnr, opts)](#get_relative_bufferbufnr-opts)
   - [next(opts)](#nextopts)
   - [prev(opts)](#prevopts)
@@ -229,6 +230,15 @@ Restore the previously saved state
 | Param | Type  | Desc |
 | ----- | ----- | ---- |
 | state | `any` |      |
+
+### is_buffer_in_any_tab(bufnr)
+
+`is_buffer_in_any_tab(bufnr): boolean` \
+Check if buffer is listed in any tab
+
+| Param | Type      | Desc |
+| ----- | --------- | ---- |
+| bufnr | `integer` |      |
 
 ### get_relative_buffer(bufnr, opts)
 

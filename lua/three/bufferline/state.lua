@@ -149,6 +149,18 @@ local function add_buffer(tabpage, bufnr, sort)
   return true
 end
 
+---Check if buffer is listed in any tab
+---@param bufnr integer
+---@return boolean
+M.is_buffer_in_any_tab = function(bufnr)
+  for _, ts in pairs(tabstate) do
+    if ts.buf_info[bufnr] then
+      return true
+    end
+  end
+  return false
+end
+
 ---@param bufnr integer
 ---@param opts table
 ---    delta nil|integer

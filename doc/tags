@@ -12,6 +12,7 @@ three.close_buffer	three.txt	/*three.close_buffer*
 three.get_relative_buffer	three.txt	/*three.get_relative_buffer*
 three.hide_all_buffers	three.txt	/*three.hide_all_buffers*
 three.hide_buffer	three.txt	/*three.hide_buffer*
+three.is_buffer_in_any_tab	three.txt	/*three.is_buffer_in_any_tab*
 three.jump_to	three.txt	/*three.jump_to*
 three.list_projects	three.txt	/*three.list_projects*
 three.move_buffer	three.txt	/*three.move_buffer*

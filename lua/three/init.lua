@@ -24,6 +24,10 @@ M.save_state = lazy("bufferline.state", "save_state")
 ---Restore the previously saved state
 ---@param state any
 M.restore_state = lazy("bufferline.state", "restore_state")
+---Check if buffer is listed in any tab
+---@param bufnr integer
+---@return boolean
+M.is_buffer_in_any_tab = lazy("bufferline.state", "is_buffer_in_any_tab")
 ---@param bufnr integer
 ---@param opts table
 ---    delta nil|integer

@@ -71,6 +71,12 @@ restore_state({state})                                       *three.restore_stat
     Parameters:
       {state} `any`
 
+is_buffer_in_any_tab({bufnr}): boolean                *three.is_buffer_in_any_tab*
+    Check if buffer is listed in any tab
+
+    Parameters:
+      {bufnr} `integer`
+
 get_relative_buffer({bufnr}, {opts}): nil|integer      *three.get_relative_buffer*
 
     Parameters:
