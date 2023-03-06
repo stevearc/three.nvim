@@ -81,8 +81,8 @@ end
 ---@param winid integer
 ---@return boolean
 M.is_normal_win = function(winid)
-  local ok, stickybuf_util = pcall(require, "stickybuf.util")
-  if ok and stickybuf_util.is_sticky_win(winid) then
+  local ok, stickybuf = pcall(require, "stickybuf")
+  if ok and stickybuf.is_pinned(winid) then
     return false
   end
   -- Check for non-normal (e.g. popup/preview) windows
