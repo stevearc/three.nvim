@@ -23,7 +23,7 @@ OPTIONS                                                            *three-option
           -- Scroll indicator icons when buffers exceed screen width
           scroll = { "«", "»" },
           -- Pinned buffer icon
-          pin = "車",
+          pin = "󰐃",
         },
         -- When true, only show buffers that are inside the current directory
         -- This can be toggled on a per-tab basis with toggle_scope_by_dir()
