@@ -55,6 +55,18 @@ These are _opinionated_ tools. They are designed for a specific workflow, and wi
 three.nvim supports all the usual plugin managers
 
 <details>
+  <summary>lazy.nvim</summary>
+
+```lua
+{
+  'stevearc/three.nvim',
+  opts = {},
+}
+```
+
+</details>
+
+<details>
   <summary>Packer</summary>
 
 ```lua
