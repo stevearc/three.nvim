@@ -13,8 +13,8 @@ local function set_winlayout_data(layout)
   local type = layout[1]
   if type == "leaf" then
     local winid = layout[2]
-    local winfixwidth = vim.api.nvim_win_get_option(winid, "winfixwidth")
-    local winfixheight = vim.api.nvim_win_get_option(winid, "winfixheight")
+    local winfixwidth = vim.wo[winid].winfixwidth
+    local winfixheight = vim.wo[winid].winfixheight
     local min_width = winfixwidth and vim.api.nvim_win_get_width(winid) or 0
     local min_height = winfixheight and vim.api.nvim_win_get_height(winid) or 0
     if vim.api.nvim_get_current_win() == winid then

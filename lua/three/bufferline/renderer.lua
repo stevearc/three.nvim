@@ -61,7 +61,7 @@ local function get_buf_layout_data(idx, bufnr, buf_info, status)
     min_width = min_width + vim.api.nvim_strwidth(config.icon.pin)
   end
   return {
-    is_modified = vim.api.nvim_buf_get_option(bufnr, "modified"),
+    is_modified = vim.bo[bufnr].modified,
     pinned = buf_info.pinned,
     min_width = min_width,
     width = min_width,

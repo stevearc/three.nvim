@@ -115,7 +115,7 @@ end
 ---@return boolean
 local function should_display(tabpage, bufnr)
   local ts = tabstate[tabpage]
-  if vim.api.nvim_buf_is_valid(bufnr) and vim.api.nvim_buf_get_option(bufnr, "buflisted") then
+  if vim.api.nvim_buf_is_valid(bufnr) and vim.bo[bufnr].buflisted then
     if ts.scope_by_directory then
       local tabnr = vim.api.nvim_tabpage_get_number(tabpage)
       local cwd = vim.fn.getcwd(-1, tabnr)
@@ -386,7 +386,7 @@ local function get_fallback_buffer(tabpage, bufnr)
   end
   if replacement == nil then
     replacement = vim.api.nvim_create_buf(false, true)
-    vim.api.nvim_buf_set_option(replacement, "bufhidden", "wipe")
+    vim.bo[replacement].bufhidden = "wipe"
   end
   return replacement
 end
@@ -468,7 +468,7 @@ M.clone_tab = function()
   local ts = tabstate[tabpage]
   local bufnr = vim.api.nvim_get_current_buf()
   vim.cmd("tabnew")
-  vim.api.nvim_buf_set_option(0, "buflisted", false)
+  vim.bo.buflisted = false
   tabstate[0] = vim.deepcopy(ts)
   vim.api.nvim_set_current_buf(bufnr)
 end

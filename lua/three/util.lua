@@ -94,7 +94,7 @@ M.is_normal_win = function(winid)
     return false
   end
   local bufnr = vim.api.nvim_win_get_buf(winid)
-  local bt = vim.api.nvim_buf_get_option(bufnr, "buftype")
+  local bt = vim.bo[bufnr].buftype
 
   -- Ignore quickfix, prompt, and help
   return bt ~= "quickfix" and bt ~= "prompt" and bt ~= "help"

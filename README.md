@@ -198,7 +198,7 @@ require("three").setup({
     -- Constant or function to calculate the minimum window width of the focused window
     winwidth = function(winid)
       local bufnr = vim.api.nvim_win_get_buf(winid)
-      return math.max(vim.api.nvim_buf_get_option(bufnr, "textwidth"), 80)
+      return math.max(vim.bo[bufnr].textwidth, 80)
     end,
     -- Constant or function to calculate the minimum window height of the focused window
     winheight = 10,
