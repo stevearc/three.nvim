@@ -48,7 +48,8 @@ local frozen = false
 ---@return any
 M.save_state = function()
   local ret = {}
-  for _, ts in pairs(tabstate) do
+  for _, tabpage in ipairs(vim.api.nvim_list_tabpages()) do
+    local ts = tabstate[tabpage]
     local serialized = {
       buffers = {},
       scope_by_directory = ts.scope_by_directory,
