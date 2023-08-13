@@ -15,7 +15,7 @@ local M = {}
 
 ---@class three.BufferState
 ---@field bufnr integer
----@field pinned boolean
+---@field pinned? boolean
 
 local tabstate_meta = {
   __newindex = function(t, key, val)

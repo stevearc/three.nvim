@@ -1,6 +1,8 @@
 local root_config = require("three.config")
 local util = require("three.util")
 
+local uv = vim.uv or vim.loop
+
 local config = setmetatable({}, {
   __index = function(_, key)
     return root_config.projects[key]
@@ -17,7 +19,7 @@ local function get_cache_file()
 end
 
 local function format_project(project)
-  local home = os.getenv("HOME")
+  local home = assert(uv.os_homedir())
   local idx, chars = string.find(project, home)
   if idx == 1 then
     return "~" .. string.sub(project, idx + chars)
@@ -179,13 +181,21 @@ M.setup = function(opts)
   local group = vim.api.nvim_create_augroup("three.projects", {})
   if opts.autoadd then
     if vim.v.vim_did_enter == 1 then
-      M.add_project(vim.loop.cwd())
+      local cwd = uv.cwd()
+      if cwd then
+        M.add_project(cwd)
+      end
     end
     vim.api.nvim_create_autocmd({ "VimEnter", "DirChanged" }, {
       desc = "three.nvim: record project directory",
       group = group,
       callback = function()
-        M.add_project(vim.v.event.cwd or vim.loop.cwd())
+        local cwd = uv.cwd()
+        if vim.v.event.cwd then
+          M.add_project(vim.v.event.cwd)
+        elseif cwd then
+          M.add_project(cwd)
+        end
       end,
     })
   end

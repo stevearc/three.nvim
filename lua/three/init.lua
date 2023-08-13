@@ -1,5 +1,7 @@
 local M = {}
 
+---@diagnostic disable undefined-doc-param
+
 M.wrap = function(fn, ...)
   local args = { ... }
   return function(...)

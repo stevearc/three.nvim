@@ -30,3 +30,10 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
           version: v0.15.2
           args: --check .
+
+  typecheck:
+    name: typecheck
+    runs-on: ubuntu-22.04
+    steps:
+      - uses: actions/checkout@v3
+      - uses: stevearc/nvim-typecheck-action@v1
