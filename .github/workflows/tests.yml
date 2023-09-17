@@ -25,6 +25,15 @@ jobs:
       - name: Run Luacheck
         run: luacheck lua tests
 
+  typecheck:
+    name: typecheck
+    runs-on: ubuntu-22.04
+    steps:
+      - uses: actions/checkout@v3
+      - uses: stevearc/nvim-typecheck-action@v1
+        with:
+          path: lua
+
   stylua:
     name: StyLua
     runs-on: ubuntu-22.04
