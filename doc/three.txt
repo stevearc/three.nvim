@@ -3,10 +3,10 @@
 --------------------------------------------------------------------------------
 CONTENTS                                                          *three-contents*
 
-  1. Options...................................................|three-options|
-  2. Bufferline api.....................................|three-bufferline-api|
-  3. Windows api...........................................|three-windows-api|
-  4. Projects api.........................................|three-projects-api|
+  1. Options                                                   |three-options|
+  2. Bufferline api                                     |three-bufferline-api|
+  3. Windows api                                           |three-windows-api|
+  4. Projects api                                         |three-projects-api|
 
 --------------------------------------------------------------------------------
 OPTIONS                                                            *three-options*
