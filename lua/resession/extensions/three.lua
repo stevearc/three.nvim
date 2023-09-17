@@ -1,17 +1,14 @@
 local three = require("three")
 local M = {}
 
----@param data table The configuration data passed in the config
-M.config = function(data)
-  require("resession").add_hook("pre_load", function()
-    require("three.bufferline.state").set_freeze(true)
-  end)
-end
-
 ---Get the saved data for this extension
 ---@return any
 M.on_save = function()
   return three.save_state()
+end
+
+M.on_pre_load = function()
+  require("three.bufferline.state").set_freeze(true)
 end
 
 ---Restore the extension state
