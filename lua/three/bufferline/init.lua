@@ -106,6 +106,9 @@ M.setup = function(config)
     group = group,
     callback = set_colors,
   })
+  if vim.v.vim_did_enter == 1 then
+    set_colors()
+  end
   state.create_autocmds(group)
   state.display_all_buffers()
   vim.o.showtabline = 2
