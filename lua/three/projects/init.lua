@@ -69,24 +69,13 @@ local function load()
   end
 end
 
----@param patterns string[]
----@param needle string
-local function any_match(patterns, needle)
-  for _, pattern in ipairs(patterns) do
-    if needle:match(pattern) then
-      return true
-    end
-  end
-  return false
-end
-
 ---@param project string
 ---@return boolean
 local function should_add_project(project)
-  if any_match(config.allowlist, project) then
+  if vim.tbl_contains(config.allowlist, project) then
     return true
   end
-  if any_match(config.blocklist, project) then
+  if vim.tbl_contains(config.blocklist, project) then
     return false
   end
   return config.filter_dir(project)
