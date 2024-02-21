@@ -89,10 +89,6 @@ M.hide_all_buffers = lazy("bufferline.state", "hide_all_buffers")
 ---Hide the buffer from the current tab
 ---@param bufnr nil|integer
 M.hide_buffer = lazy("bufferline.state", "hide_buffer")
----@return boolean
-M.toggle_scope_by_dir = lazy("bufferline.state", "toggle_scope_by_dir")
----@param scope_by_dir boolean
-M.set_scope_by_dir = lazy("bufferline.state", "set_scope_by_dir")
 
 -- /BUFFERLINE API
 

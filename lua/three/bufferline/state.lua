@@ -11,7 +11,6 @@ local M = {}
 ---@class three.TabState
 ---@field buffers integer[]
 ---@field buf_info table<integer, three.BufferState>
----@field scope_by_directory boolean
 
 ---@class three.BufferState
 ---@field bufnr integer
@@ -32,7 +31,6 @@ local tabstate_meta = {
       local ts = {
         buffers = {},
         buf_info = {},
-        scope_by_directory = config.scope_by_directory,
       }
       t[key] = ts
       return ts
@@ -52,7 +50,6 @@ M.save_state = function()
     local ts = tabstate[tabpage]
     local serialized = {
       buffers = {},
-      scope_by_directory = ts.scope_by_directory,
     }
     table.insert(ret, serialized)
     for _, bufnr in ipairs(ts.buffers) do
@@ -76,7 +73,6 @@ M.restore_state = function(state)
       local new_ts = {
         buffers = {},
         buf_info = {},
-        scope_by_directory = ts.scope_by_directory,
       }
       tabstate[tabpage] = new_ts
       for _, buf_info in ipairs(ts.buffers) do
@@ -116,16 +112,19 @@ end
 ---@return boolean
 local function should_display(tabpage, bufnr)
   local ts = tabstate[tabpage]
+  if ts.buf_info[bufnr] and ts.buf_info[bufnr].pinned then
+    return true
+  end
+
   if vim.api.nvim_buf_is_valid(bufnr) and vim.bo[bufnr].buflisted then
-    if ts.scope_by_directory then
-      local tabnr = vim.api.nvim_tabpage_get_number(tabpage)
-      local cwd = vim.fn.getcwd(-1, tabnr)
-      return util.is_subdir(cwd, vim.api.nvim_buf_get_name(bufnr))
+    if config.should_display then
+      return config.should_display(tabpage, bufnr, ts)
     else
       return true
     end
+  else
+    return false
   end
-  return false
 end
 
 ---@param tabpage integer
@@ -555,6 +554,22 @@ M.hide_buffer = function(bufnr)
   remove_buffer_from_tabstate(0, bufnr)
 end
 
+local function cull_visible_buffers()
+  if frozen then
+    return
+  end
+  local ts = tabstate[0]
+  local to_remove = vim.tbl_filter(function(bufnr)
+    return not should_display(0, bufnr)
+  end, ts.buffers)
+  for _, bufnr in ipairs(to_remove) do
+    remove_buffer_from_tabstate(0, bufnr)
+  end
+  if not vim.tbl_isempty(to_remove) then
+    util.rerender()
+  end
+end
+
 ---@private
 M.create_autocmds = function(group)
   vim.api.nvim_create_autocmd({ "BufNew", "TermOpen", "BufEnter" }, {
@@ -566,6 +581,13 @@ M.create_autocmds = function(group)
       end
     end,
   })
+  vim.api.nvim_create_autocmd(config.events, {
+    pattern = "*",
+    group = group,
+    callback = vim.schedule_wrap(function(params)
+      cull_visible_buffers()
+    end),
+  })
   vim.api.nvim_create_autocmd("OptionSet", {
     pattern = "buflisted",
     group = group,
@@ -575,14 +597,18 @@ M.create_autocmds = function(group)
       end
     end,
   })
-  vim.api.nvim_create_autocmd("BufDelete", {
+  vim.api.nvim_create_autocmd("BufUnload", {
     pattern = "*",
     group = group,
-    callback = function(params)
+    -- Delay this so that we don't remove the buffer if it's getting reloaded
+    callback = vim.schedule_wrap(function(params)
+      if vim.api.nvim_buf_is_loaded(params.buf) then
+        return
+      end
       if not frozen and remove_buffer_from_tabstates(params.buf) then
         util.rerender()
       end
-    end,
+    end),
   })
 end
 
@@ -593,37 +619,6 @@ M.display_all_buffers = function()
       add_buffer(0, bufnr)
     end
   end
-end
-
----@return boolean
-M.toggle_scope_by_dir = function()
-  local ts = tabstate[0]
-  M.set_scope_by_dir(not ts.scope_by_directory)
-  return ts.scope_by_directory
-end
-
----@param scope_by_dir boolean
-M.set_scope_by_dir = function(scope_by_dir)
-  local ts = tabstate[0]
-  ts.scope_by_directory = scope_by_dir
-  if scope_by_dir then
-    local to_remove = vim.tbl_filter(function(bufnr)
-      return not should_display(0, bufnr)
-    end, ts.buffers)
-    for _, bufnr in ipairs(to_remove) do
-      remove_buffer_from_tabstate(0, bufnr)
-    end
-  else
-    for _, winid in ipairs(vim.api.nvim_tabpage_list_wins(0)) do
-      if vim.api.nvim_win_is_valid(winid) then
-        local bufnr = vim.api.nvim_win_get_buf(winid)
-        if should_display(0, bufnr) then
-          add_buffer(0, bufnr)
-        end
-      end
-    end
-  end
-  util.rerender()
 end
 
 ---@private
