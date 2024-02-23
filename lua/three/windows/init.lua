@@ -201,7 +201,9 @@ M.setup = function()
   vim.api.nvim_create_autocmd({ "VimEnter", "WinEnter", "BufWinEnter", "VimResized" }, {
     desc = "Keep all windows equal size",
     pattern = "*",
-    callback = resize_windows,
+    -- Delay in case we're switching to a window and then switching back immediately.
+    -- Happens when opening the LSP hover floating window, for example.
+    callback = vim.schedule_wrap(resize_windows),
     group = group,
   })
 end
