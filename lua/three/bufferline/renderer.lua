@@ -202,11 +202,13 @@ local function format_buffers(max_width)
 
   local prefix = ""
   local suffix = ""
+  local any_pinned = false
   if total_width > max_width then
-    -- Perform width calculations assuming we have to show scroll icons
+    -- Perform width calculations assuming we have to show scroll icons and pin divider
     local scroll_width = max_width
       - vim.api.nvim_strwidth(config.icon.scroll[1])
       - vim.api.nvim_strwidth(config.icon.scroll[2])
+      - vim.api.nvim_strwidth(config.icon.pin_divider)
     local start_idx = scroll_buffers(buf_data, focus, scroll_width)
     local slice_width = 0
     local slice = {}
@@ -215,13 +217,14 @@ local function format_buffers(max_width)
       if slice_width + data.width > max_width then
         break
       end
+      any_pinned = any_pinned or data.pinned
       table.insert(slice, data)
       slice_width = slice_width + data.width
     end
     if start_idx > 1 then
       prefix = config.icon.scroll[1]
     end
-    if start_idx + #slice < #buf_data then
+    if start_idx + #slice <= #buf_data then
       suffix = config.icon.scroll[2]
     end
     buf_data = slice
@@ -230,18 +233,32 @@ local function format_buffers(max_width)
 
   total_width = total_width + vim.api.nvim_strwidth(prefix)
   total_width = total_width + vim.api.nvim_strwidth(suffix)
+  if any_pinned then
+    total_width = total_width + vim.api.nvim_strwidth(config.icon.pin_divider)
+  end
+
   if total_width < max_width then
     add_padding(buf_data, max_width - total_width)
   end
 
+  local tabs = {}
+  local pinned = true
+  for i, data in ipairs(buf_data) do
+    if i > 1 and pinned and not data.pinned then
+      table.insert(tabs, hl("TabLine"))
+      table.insert(tabs, config.icon.pin_divider)
+    end
+    pinned = data.pinned
+    table.insert(tabs, format_buffer(data))
+    if i == #buf_data and data.pinned then
+      table.insert(tabs, hl("TabLine"))
+      table.insert(tabs, config.icon.pin_divider)
+    end
+  end
+
   return hl("TabLineScrollIndicator")
     .. prefix
-    .. table.concat(
-      vim.tbl_map(function(data)
-        return format_buffer(data)
-      end, buf_data),
-      ""
-    )
+    .. table.concat(tabs, "")
     .. hl("TabLineScrollIndicator")
     .. suffix
 end
