@@ -179,7 +179,8 @@ local function format_buffers(max_width)
     local bufnr = vim.api.nvim_win_get_buf(winid)
     buf_status[bufnr] = bufnr == cur_buf and "Sel" or "Visible"
   end
-  local ts = state[0]
+  local ts = state.get_tab_state(0)
+  ts.buffers = vim.tbl_filter(vim.api.nvim_buf_is_valid, ts.buffers)
   if vim.tbl_isempty(ts.buffers) then
     return ""
   end

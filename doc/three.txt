@@ -28,8 +28,10 @@ OPTIONS                                                            *three-option
         -- List of autocmd events that will trigger a re-render of the bufferline
         events = {},
         should_display = function(tabpage, bufnr, ts)
-          return vim.bo[bufnr].buflisted
+          return vim.bo[bufnr].buflisted or vim.bo[bufnr].modified
         end,
+        -- Number of tabs to use for buffers with should_display = false
+        recency_slots = 1,
       },
       windows = {
         enabled = true,
@@ -171,22 +173,16 @@ smart_close()                                                  *three.smart_clos
     Close the current window or buffer
 
 
-close_all_buffers({filter}, {force})                     *three.close_all_buffers*
-
-    Parameters:
-      {filter} `nil|fun(state: three.BufferState): boolean`
-      {force}  `nil|boolean`
-
-hide_all_buffers({filter})                                *three.hide_all_buffers*
-
-    Parameters:
-      {filter} `nil|fun(state: three.BufferState): boolean`
-
 hide_buffer({bufnr})                                           *three.hide_buffer*
     Hide the buffer from the current tab
 
     Parameters:
       {bufnr} `nil|integer`
+
+get_tab_state({tabpage}): three.TabState                     *three.get_tab_state*
+
+    Parameters:
+      {tabpage} `integer`
 
 --------------------------------------------------------------------------------
 WINDOWS API                                                    *three-windows-api*

@@ -18,6 +18,8 @@ local default_config = {
     should_display = function(tabpage, bufnr, ts)
       return vim.bo[bufnr].buflisted or vim.bo[bufnr].modified
     end,
+    -- Number of tabs to use for buffers with should_display = false
+    recency_slots = 1,
   },
   windows = {
     enabled = true,

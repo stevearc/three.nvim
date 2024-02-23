@@ -135,7 +135,7 @@ M.open_project = function(project)
   local is_tab_empty = true
   if root_config.bufferline.enabled then
     local state = require("three.bufferline.state")
-    local ts = state[0]
+    local ts = state.get_tab_state(0)
     is_tab_empty = vim.tbl_isempty(ts.buffers)
   else
     for _, winid in ipairs(vim.api.nvim_tabpage_list_wins(0)) do
@@ -154,9 +154,9 @@ M.open_project = function(project)
   end
 
   if not is_tab_empty then
-    vim.cmd("tabnew")
+    vim.cmd.tabnew()
   end
-  vim.cmd("tcd " .. project)
+  vim.cmd.tcd({ args = { project } })
 end
 
 ---@return string[]

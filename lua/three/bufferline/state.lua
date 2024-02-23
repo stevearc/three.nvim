@@ -108,23 +108,37 @@ local function apply_sorting()
 end
 
 ---@param tabpage integer
+---@return table<integer, boolean>
+local function get_visible_buffers(tabpage)
+  local visible = {}
+  for _, winid in ipairs(vim.api.nvim_tabpage_list_wins(tabpage)) do
+    if vim.api.nvim_win_is_valid(winid) then
+      visible[vim.api.nvim_win_get_buf(winid)] = true
+    end
+  end
+  return visible
+end
+
+---@param tabpage integer
 ---@param bufnr integer
+---@param visible? table<integer, boolean>
 ---@return boolean
-local function should_display(tabpage, bufnr)
+local function should_display(tabpage, bufnr, visible)
+  if not vim.api.nvim_buf_is_valid(bufnr) then
+    return false
+  end
+
   local ts = tabstate[tabpage]
   if ts.buf_info[bufnr] and ts.buf_info[bufnr].pinned then
     return true
-  end
-
-  if vim.api.nvim_buf_is_valid(bufnr) and vim.bo[bufnr].buflisted then
-    if config.should_display then
-      return config.should_display(tabpage, bufnr, ts)
-    else
-      return true
-    end
-  else
+  elseif not vim.bo[bufnr].buflisted then
     return false
   end
+
+  if not visible then
+    visible = get_visible_buffers(tabpage)
+  end
+  return visible[bufnr] or config.should_display(tabpage, bufnr, ts)
 end
 
 ---@param tabpage integer
@@ -420,11 +434,7 @@ M.close_buffer = function(bufnr, force)
     remove_buffer_from_tabstate(tabpage, bufnr)
   end
 
-  local bdelete = "bdelete"
-  if force then
-    bdelete = bdelete .. "!"
-  end
-  vim.cmd(bdelete .. " " .. tostring(bufnr))
+  vim.cmd.bwipeout({ args = { bufnr }, mods = { bang = force } })
 end
 
 ---Toggle the pinned status of the current buffer
@@ -467,8 +477,9 @@ M.clone_tab = function()
   local tabpage = vim.api.nvim_get_current_tabpage()
   local ts = tabstate[tabpage]
   local bufnr = vim.api.nvim_get_current_buf()
-  vim.cmd("tabnew")
+  vim.cmd.tabnew()
   vim.bo.buflisted = false
+  vim.bo.bufhidden = "wipe"
   tabstate[0] = vim.deepcopy(ts)
   vim.api.nvim_set_current_buf(bufnr)
 end
@@ -489,58 +500,25 @@ M.smart_close = function()
   local curwin = vim.api.nvim_get_current_win()
   -- if we're in a non-normal or floating window: close
   if not util.is_normal_win(0) then
-    vim.cmd("close")
+    vim.cmd.close()
     return
   end
 
   -- You can tag a window for smart_close to always close the buffer by setting the window
   -- variable vim.w.smart_close_buffer = true
-  local ok, close_buffer = pcall(vim.api.nvim_win_get_var, curwin, "smart_close_buffer")
-  if ok and close_buffer then
+  local close_buffer = vim.w[curwin].smart_close_buffer
+  if close_buffer then
     local bufnr = vim.api.nvim_get_current_buf()
     if other_normal_window_exists() then
-      vim.cmd("close")
+      vim.cmd.close()
     elseif #vim.api.nvim_list_tabpages() > 1 then
-      vim.cmd("tabclose")
+      vim.cmd.tabclose()
     end
     M.close_buffer(bufnr)
   elseif other_normal_window_exists() then
-    vim.cmd("close")
+    vim.cmd.close()
   else
     M.close_buffer()
-  end
-end
-
----@param filter nil|fun(state: three.BufferState): boolean
----@param force nil|boolean
-M.close_all_buffers = function(filter, force)
-  if not filter then
-    filter = function()
-      return true
-    end
-  end
-  local ts = tabstate[0]
-  local close = vim.tbl_filter(function(bufnr)
-    return filter(ts.buf_info[bufnr])
-  end, ts.buffers)
-  for _, bufnr in ipairs(close) do
-    M.close_buffer(bufnr, force)
-  end
-end
-
----@param filter nil|fun(state: three.BufferState): boolean
-M.hide_all_buffers = function(filter)
-  if not filter then
-    filter = function()
-      return true
-    end
-  end
-  local ts = tabstate[0]
-  local hide = vim.tbl_filter(function(bufnr)
-    return filter(ts.buf_info[bufnr])
-  end, ts.buffers)
-  for _, bufnr in ipairs(hide) do
-    M.hide_buffer(bufnr)
   end
 end
 
@@ -559,9 +537,17 @@ local function cull_visible_buffers()
     return
   end
   local ts = tabstate[0]
-  local to_remove = vim.tbl_filter(function(bufnr)
-    return not should_display(0, bufnr)
-  end, ts.buffers)
+  local to_remove = {}
+  local num_remove = 0
+  local visible = get_visible_buffers(0)
+  for _, bufnr in ipairs(ts.buffers) do
+    if not should_display(0, bufnr, visible) then
+      num_remove = num_remove + 1
+      if num_remove > config.recency_slots then
+        table.insert(to_remove, bufnr)
+      end
+    end
+  end
   for _, bufnr in ipairs(to_remove) do
     remove_buffer_from_tabstate(0, bufnr)
   end
@@ -592,8 +578,12 @@ M.create_autocmds = function(group)
     pattern = "buflisted",
     group = group,
     callback = function(params)
+      local bufnr = params.buf
+      if bufnr == 0 then
+        bufnr = vim.api.nvim_get_current_buf()
+      end
       if not frozen then
-        touch_buffer(params.buf)
+        touch_buffer(bufnr)
       end
     end,
   })
@@ -627,18 +617,10 @@ M.set_freeze = function(freeze)
   frozen = freeze
 end
 
-return setmetatable(M, {
-  __newindex = function(_, key)
-    error(string.format("Cannot set '%s' on three.bufferline.state", key))
-  end,
-  __index = function(_, key)
-    local ts = tabstate[key]
-    if ts then
-      -- Make sure all the buffers are valid
-      ts.buffers = vim.tbl_filter(function(bufnr)
-        return vim.api.nvim_buf_is_valid(bufnr)
-      end, ts.buffers)
-    end
-    return ts
-  end,
-})
+---@param tabpage integer
+---@return three.TabState
+M.get_tab_state = function(tabpage)
+  return tabstate[tabpage]
+end
+
+return M

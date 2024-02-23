@@ -29,9 +29,8 @@ This plugin is very specific to my workflows. I split it out of my dotfiles to o
   - [set_pinned(bufnrs, pinned)](#set_pinnedbufnrs-pinned)
   - [clone_tab()](#clone_tab)
   - [smart_close()](#smart_close)
-  - [close_all_buffers(filter, force)](#close_all_buffersfilter-force)
-  - [hide_all_buffers(filter)](#hide_all_buffersfilter)
   - [hide_buffer(bufnr)](#hide_bufferbufnr)
+  - [get_tab_state(tabpage)](#get_tab_statetabpage)
 - [three.windows](#threewindows)
   - [toggle_win_resize()](#toggle_win_resize)
   - [set_win_resize(new_enabled)](#set_win_resizenew_enabled)
@@ -192,8 +191,10 @@ require("three").setup({
     -- List of autocmd events that will trigger a re-render of the bufferline
     events = {},
     should_display = function(tabpage, bufnr, ts)
-      return vim.bo[bufnr].buflisted
+      return vim.bo[bufnr].buflisted or vim.bo[bufnr].modified
     end,
+    -- Number of tabs to use for buffers with should_display = false
+    recency_slots = 1,
   },
   windows = {
     enabled = true,
@@ -388,23 +389,6 @@ Clone the current tab into a new tab
 Close the current window or buffer
 
 
-### close_all_buffers(filter, force)
-
-`close_all_buffers(filter, force)`
-
-| Param  | Type                                          | Desc |
-| ------ | --------------------------------------------- | ---- |
-| filter | `nil\|fun(state: three.BufferState): boolean` |      |
-| force  | `nil\|boolean`                                |      |
-
-### hide_all_buffers(filter)
-
-`hide_all_buffers(filter)`
-
-| Param  | Type                                          | Desc |
-| ------ | --------------------------------------------- | ---- |
-| filter | `nil\|fun(state: three.BufferState): boolean` |      |
-
 ### hide_buffer(bufnr)
 
 `hide_buffer(bufnr)` \
@@ -413,6 +397,14 @@ Hide the buffer from the current tab
 | Param | Type           | Desc |
 | ----- | -------------- | ---- |
 | bufnr | `nil\|integer` |      |
+
+### get_tab_state(tabpage)
+
+`get_tab_state(tabpage): three.TabState`
+
+| Param   | Type      | Desc |
+| ------- | --------- | ---- |
+| tabpage | `integer` |      |
 
 
 <!-- /bufferline API -->
