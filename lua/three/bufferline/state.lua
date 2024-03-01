@@ -129,7 +129,14 @@ local function should_display(tabpage, bufnr, visible)
   end
 
   local ts = tabstate[tabpage]
-  if ts.buf_info[bufnr] and ts.buf_info[bufnr].pinned then
+  if
+    #ts.buffers == 0
+    and vim.api.nvim_buf_get_name(bufnr) == ""
+    and vim.api.nvim_buf_line_count(bufnr) == 1
+  then
+    -- don't display single empty buffers
+    return false
+  elseif ts.buf_info[bufnr] and ts.buf_info[bufnr].pinned then
     return true
   elseif not vim.bo[bufnr].buflisted then
     return false
