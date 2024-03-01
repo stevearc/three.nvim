@@ -155,6 +155,8 @@ M.open_project = function(project)
 
   if not is_tab_empty then
     vim.cmd.tabnew()
+    vim.bo.buflisted = false
+    vim.bo.bufhidden = "wipe"
   end
   vim.cmd.tcd({ args = { project } })
 end
