@@ -180,11 +180,13 @@ require("three").setup({
     enabled = true,
     icon = {
       -- Tab left/right dividers
-      -- Set to this value for fancier, more "tab-looking" tabs
-      -- dividers = { " ", "" },
-      dividers = { "▍", "" },
+      -- Set to this value for more a more compact look
+      -- dividers = { "▍", "" },
+      dividers = { " ", "" },
       -- Scroll indicator icons when buffers exceed screen width
       scroll = { "«", "»" },
+      -- Divider between pinned buffers and others
+      pin_divider = "",
       -- Pinned buffer icon
       pin = "󰐃",
     },
