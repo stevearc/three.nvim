@@ -18,16 +18,20 @@ OPTIONS                                                            *three-option
         icon = {
           -- Tab left/right dividers
           -- Set to this value for fancier, more "tab-looking" tabs
-          -- dividers = { " ", " " },
+          -- dividers = { " ", "" },
           dividers = { "▍", "" },
           -- Scroll indicator icons when buffers exceed screen width
           scroll = { "«", "»" },
           -- Pinned buffer icon
           pin = "󰐃",
         },
-        -- When true, only show buffers that are inside the current directory
-        -- This can be toggled on a per-tab basis with toggle_scope_by_dir()
-        scope_by_directory = true,
+        -- List of autocmd events that will trigger a re-render of the bufferline
+        events = {},
+        should_display = function(tabpage, bufnr, ts)
+          return vim.bo[bufnr].buflisted or vim.bo[bufnr].modified
+        end,
+        -- Number of tabs to use for buffers with should_display = false
+        recency_slots = 1,
       },
       windows = {
         enabled = true,
@@ -169,30 +173,16 @@ smart_close()                                                  *three.smart_clos
     Close the current window or buffer
 
 
-close_all_buffers({filter}, {force})                     *three.close_all_buffers*
-
-    Parameters:
-      {filter} `nil|fun(state: three.BufferState): boolean`
-      {force}  `nil|boolean`
-
-hide_all_buffers({filter})                                *three.hide_all_buffers*
-
-    Parameters:
-      {filter} `nil|fun(state: three.BufferState): boolean`
-
 hide_buffer({bufnr})                                           *three.hide_buffer*
     Hide the buffer from the current tab
 
     Parameters:
       {bufnr} `nil|integer`
 
-toggle_scope_by_dir(): boolean                         *three.toggle_scope_by_dir*
-
-
-set_scope_by_dir({scope_by_dir})                          *three.set_scope_by_dir*
+get_tab_state({tabpage}): three.TabState                     *three.get_tab_state*
 
     Parameters:
-      {scope_by_dir} `boolean`
+      {tabpage} `integer`
 
 --------------------------------------------------------------------------------
 WINDOWS API                                                    *three-windows-api*

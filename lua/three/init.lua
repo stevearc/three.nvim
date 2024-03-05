@@ -81,18 +81,12 @@ M.set_pinned = lazy("bufferline.state", "set_pinned")
 M.clone_tab = lazy("bufferline.state", "clone_tab")
 ---Close the current window or buffer
 M.smart_close = lazy("bufferline.state", "smart_close")
----@param filter nil|fun(state: three.BufferState): boolean
----@param force nil|boolean
-M.close_all_buffers = lazy("bufferline.state", "close_all_buffers")
----@param filter nil|fun(state: three.BufferState): boolean
-M.hide_all_buffers = lazy("bufferline.state", "hide_all_buffers")
 ---Hide the buffer from the current tab
 ---@param bufnr nil|integer
 M.hide_buffer = lazy("bufferline.state", "hide_buffer")
----@return boolean
-M.toggle_scope_by_dir = lazy("bufferline.state", "toggle_scope_by_dir")
----@param scope_by_dir boolean
-M.set_scope_by_dir = lazy("bufferline.state", "set_scope_by_dir")
+---@param tabpage integer
+---@return three.TabState
+M.get_tab_state = lazy("bufferline.state", "get_tab_state")
 
 -- /BUFFERLINE API
 

@@ -2,7 +2,7 @@
 
 > buffers, windows, and tabs
 
-These are _opinionated_ tools. They are designed for a specific workflow, and will not be for everyone.
+This plugin is very specific to my workflows. I split it out of my dotfiles to organize it better and get a nice CI setup. You are welcome to use it or draw inspiration from it, but it is expected to not be for everyone. Bug reports may be acted upon, but feature requests will most likely be ignored. There are no guarantees of backwards compatibility.
 
 <!-- TOC -->
 
@@ -29,11 +29,8 @@ These are _opinionated_ tools. They are designed for a specific workflow, and wi
   - [set_pinned(bufnrs, pinned)](#set_pinnedbufnrs-pinned)
   - [clone_tab()](#clone_tab)
   - [smart_close()](#smart_close)
-  - [close_all_buffers(filter, force)](#close_all_buffersfilter-force)
-  - [hide_all_buffers(filter)](#hide_all_buffersfilter)
   - [hide_buffer(bufnr)](#hide_bufferbufnr)
-  - [toggle_scope_by_dir()](#toggle_scope_by_dir)
-  - [set_scope_by_dir(scope_by_dir)](#set_scope_by_dirscope_by_dir)
+  - [get_tab_state(tabpage)](#get_tab_statetabpage)
 - [three.windows](#threewindows)
   - [toggle_win_resize()](#toggle_win_resize)
   - [set_win_resize(new_enabled)](#set_win_resizenew_enabled)
@@ -70,11 +67,13 @@ three.nvim supports all the usual plugin managers
   <summary>Packer</summary>
 
 ```lua
-require('packer').startup(function()
-    use {
-      'stevearc/three.nvim',
-      config = function() require('three').setup() end
-    }
+require("packer").startup(function()
+  use({
+    "stevearc/three.nvim",
+    config = function()
+      require("three").setup()
+    end,
+  })
 end)
 ```
 
@@ -84,9 +83,9 @@ end)
   <summary>Paq</summary>
 
 ```lua
-require "paq" {
-    {'stevearc/three.nvim'};
-}
+require("paq")({
+  { "stevearc/three.nvim" },
+})
 ```
 
 </details>
@@ -133,7 +132,7 @@ git clone --depth=1 https://github.com/stevearc/three.nvim.git \
 Add the following to your init.lua
 
 ```lua
-require('three').setup()
+require("three").setup()
 ```
 
 Optionally, set up some keymaps. Here are some recommended ones to start with
@@ -182,16 +181,20 @@ require("three").setup({
     icon = {
       -- Tab left/right dividers
       -- Set to this value for fancier, more "tab-looking" tabs
-      -- dividers = { " ", " " },
+      -- dividers = { " ", "" },
       dividers = { "▍", "" },
       -- Scroll indicator icons when buffers exceed screen width
       scroll = { "«", "»" },
       -- Pinned buffer icon
       pin = "󰐃",
     },
-    -- When true, only show buffers that are inside the current directory
-    -- This can be toggled on a per-tab basis with toggle_scope_by_dir()
-    scope_by_directory = true,
+    -- List of autocmd events that will trigger a re-render of the bufferline
+    events = {},
+    should_display = function(tabpage, bufnr, ts)
+      return vim.bo[bufnr].buflisted or vim.bo[bufnr].modified
+    end,
+    -- Number of tabs to use for buffers with should_display = false
+    recency_slots = 1,
   },
   windows = {
     enabled = true,
@@ -386,23 +389,6 @@ Clone the current tab into a new tab
 Close the current window or buffer
 
 
-### close_all_buffers(filter, force)
-
-`close_all_buffers(filter, force)`
-
-| Param  | Type                                          | Desc |
-| ------ | --------------------------------------------- | ---- |
-| filter | `nil\|fun(state: three.BufferState): boolean` |      |
-| force  | `nil\|boolean`                                |      |
-
-### hide_all_buffers(filter)
-
-`hide_all_buffers(filter)`
-
-| Param  | Type                                          | Desc |
-| ------ | --------------------------------------------- | ---- |
-| filter | `nil\|fun(state: three.BufferState): boolean` |      |
-
 ### hide_buffer(bufnr)
 
 `hide_buffer(bufnr)` \
@@ -412,18 +398,13 @@ Hide the buffer from the current tab
 | ----- | -------------- | ---- |
 | bufnr | `nil\|integer` |      |
 
-### toggle_scope_by_dir()
+### get_tab_state(tabpage)
 
-`toggle_scope_by_dir(): boolean`
+`get_tab_state(tabpage): three.TabState`
 
-
-### set_scope_by_dir(scope_by_dir)
-
-`set_scope_by_dir(scope_by_dir)`
-
-| Param        | Type      | Desc |
-| ------------ | --------- | ---- |
-| scope_by_dir | `boolean` |      |
+| Param   | Type      | Desc |
+| ------- | --------- | ---- |
+| tabpage | `integer` |      |
 
 
 <!-- /bufferline API -->

@@ -5,17 +5,23 @@ local default_config = {
     enabled = true,
     icon = {
       -- Tab left/right dividers
-      -- Set to this value for fancier, more "tab-looking" tabs
-      -- dividers = { " ", " " },
-      dividers = { "▍", "" },
+      -- Set to this value for more a more compact look
+      -- dividers = { "▍", "" },
+      dividers = { " ", "" },
       -- Scroll indicator icons when buffers exceed screen width
       scroll = { "«", "»" },
+      -- Divider between pinned buffers and others
+      pin_divider = "",
       -- Pinned buffer icon
       pin = "󰐃",
     },
-    -- When true, only show buffers that are inside the current directory
-    -- This can be toggled on a per-tab basis with toggle_scope_by_dir()
-    scope_by_directory = true,
+    -- List of autocmd events that will trigger a re-render of the bufferline
+    events = {},
+    should_display = function(tabpage, bufnr, ts)
+      return vim.bo[bufnr].buflisted or vim.bo[bufnr].modified
+    end,
+    -- Number of tabs to use for buffers with should_display = false
+    recency_slots = 1,
   },
   windows = {
     enabled = true,
