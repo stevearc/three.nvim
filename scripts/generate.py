@@ -5,13 +5,13 @@ from nvim_doc_tools import (
     VimdocSection,
     generate_md_toc,
     indent,
-    parse_functions,
+    parse_directory,
     read_section,
-    render_api,
-    render_md_api,
-    render_vimdoc_api,
+    render_md_api2,
+    render_vimdoc_api2,
     replace_section,
 )
+from nvim_doc_tools.apidoc import render_api
 
 HERE = os.path.dirname(__file__)
 ROOT = os.path.abspath(os.path.join(HERE, os.path.pardir))
@@ -44,38 +44,29 @@ def get_options_vimdoc() -> "VimdocSection":
 
 def generate_vimdoc():
     doc = Vimdoc("three.txt", "three")
-    funcs = parse_functions(os.path.join(ROOT, "lua", "three", "init.lua"))
+    types = parse_directory(os.path.join(ROOT, "lua"))
     doc.sections.extend(
         [
             get_options_vimdoc(),
             VimdocSection(
                 "bufferline API",
                 "three-bufferline-api",
-                render_vimdoc_api(
-                    "three",
-                    parse_functions(
-                        os.path.join(ROOT, "lua", "three", "bufferline", "state.lua")
-                    ),
+                render_vimdoc_api2(
+                    "three", types.files["three/bufferline/state.lua"].functions, types
                 ),
             ),
             VimdocSection(
                 "windows API",
                 "three-windows-api",
-                render_vimdoc_api(
-                    "three",
-                    parse_functions(
-                        os.path.join(ROOT, "lua", "three", "windows", "init.lua")
-                    ),
+                render_vimdoc_api2(
+                    "three", types.files["three/windows/init.lua"].functions, types
                 ),
             ),
             VimdocSection(
                 "projects API",
                 "three-projects-api",
-                render_vimdoc_api(
-                    "three",
-                    parse_functions(
-                        os.path.join(ROOT, "lua", "three", "projects", "init.lua")
-                    ),
+                render_vimdoc_api2(
+                    "three", types.files["three/projects/init.lua"].functions, types
                 ),
             ),
         ]
@@ -107,48 +98,52 @@ def update_readme_toc():
 
 def generate_api():
     # Bufferline
-    funcs = parse_functions(
-        os.path.join(ROOT, "lua", "three", "bufferline", "state.lua")
-    )
+    types = parse_directory(os.path.join(ROOT, "lua"))
+    file = types.files["three/bufferline/state.lua"]
     replace_section(
         os.path.join(ROOT, "lua", "three", "init.lua"),
         r"^-- BUFFERLINE API$",
         r"^-- /BUFFERLINE API$",
         ["\n"]
         + render_api(
-            funcs, lambda f: f'M.{f.name} = lazy("bufferline.state", "{f.name}")'
+            file,
+            types,
+            lambda f, t: f'M.{f.name} = lazy("bufferline.state", "{f.name}")',
         )
         + ["\n"],
     )
 
     # Windows
-    funcs = parse_functions(os.path.join(ROOT, "lua", "three", "windows", "init.lua"))
+    file = types.files["three/windows/init.lua"]
     replace_section(
         os.path.join(ROOT, "lua", "three", "init.lua"),
         r"^-- WINDOWS API$",
         r"^-- /WINDOWS API$",
         ["\n"]
-        + render_api(funcs, lambda f: f'M.{f.name} = lazy("windows", "{f.name}")')
+        + render_api(
+            file, types, lambda f, t: f'M.{f.name} = lazy("windows", "{f.name}")'
+        )
         + ["\n"],
     )
 
     # Projects
-    funcs = parse_functions(os.path.join(ROOT, "lua", "three", "projects", "init.lua"))
+    file = types.files["three/projects/init.lua"]
     replace_section(
         os.path.join(ROOT, "lua", "three", "init.lua"),
         r"^-- PROJECTS API$",
         r"^-- /PROJECTS API$",
         ["\n"]
-        + render_api(funcs, lambda f: f'M.{f.name} = lazy("projects", "{f.name}")')
+        + render_api(
+            file, types, lambda f, t: f'M.{f.name} = lazy("projects", "{f.name}")'
+        )
         + ["\n"],
     )
 
 
 def update_md_api():
-    funcs = parse_functions(
-        os.path.join(ROOT, "lua", "three", "bufferline", "state.lua")
-    )
-    lines = ["\n"] + render_md_api(funcs) + ["\n"]
+    types = parse_directory(os.path.join(ROOT, "lua"))
+    funcs = types.files["three/bufferline/state.lua"].functions
+    lines = ["\n"] + render_md_api2(funcs, types) + ["\n"]
     replace_section(
         README,
         r"^<!-- bufferline API -->$",
@@ -156,8 +151,8 @@ def update_md_api():
         lines,
     )
 
-    funcs = parse_functions(os.path.join(ROOT, "lua", "three", "windows", "init.lua"))
-    lines = ["\n"] + render_md_api(funcs) + ["\n"]
+    funcs = types.files["three/windows/init.lua"].functions
+    lines = ["\n"] + render_md_api2(funcs, types) + ["\n"]
     replace_section(
         README,
         r"^<!-- windows API -->$",
@@ -165,8 +160,8 @@ def update_md_api():
         lines,
     )
 
-    funcs = parse_functions(os.path.join(ROOT, "lua", "three", "projects", "init.lua"))
-    lines = ["\n"] + render_md_api(funcs) + ["\n"]
+    funcs = types.files["three/projects/init.lua"].functions
+    lines = ["\n"] + render_md_api2(funcs, types) + ["\n"]
     replace_section(
         README,
         r"^<!-- projects API -->$",
