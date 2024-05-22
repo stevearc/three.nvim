@@ -261,32 +261,32 @@ Check if buffer is listed in any tab
 
 `get_relative_buffer(bufnr, opts): nil|integer`
 
-| Param | Type      | Desc           |     |
-| ----- | --------- | -------------- | --- |
-| bufnr | `integer` |                |     |
-| opts  | `table`   |                |     |
-|       | delta     | `nil\|integer` |     |
-|       | wrap      | `nil\|boolean` |     |
+| Param | Type                          | Desc           |                                      |
+| ----- | ----------------------------- | -------------- | ------------------------------------ |
+| bufnr | `integer`                     |                |                                      |
+| opts  | `nil\|three.bufferSelectOpts` |                |                                      |
+|       | delta                         | `nil\|integer` | Offset from current buffer           |
+|       | wrap                          | `nil\|boolean` | If true, wrap around the buffer list |
 
 ### next(opts)
 
 `next(opts)`
 
-| Param | Type    | Desc           |     |
-| ----- | ------- | -------------- | --- |
-| opts  | `table` |                |     |
-|       | delta   | `nil\|integer` |     |
-|       | wrap    | `nil\|boolean` |     |
+| Param | Type                          | Desc           |                                      |
+| ----- | ----------------------------- | -------------- | ------------------------------------ |
+| opts  | `nil\|three.bufferSelectOpts` |                |                                      |
+|       | delta                         | `nil\|integer` | Offset from current buffer           |
+|       | wrap                          | `nil\|boolean` | If true, wrap around the buffer list |
 
 ### prev(opts)
 
 `prev(opts)`
 
-| Param | Type    | Desc           |     |
-| ----- | ------- | -------------- | --- |
-| opts  | `table` |                |     |
-|       | delta   | `nil\|integer` |     |
-|       | wrap    | `nil\|boolean` |     |
+| Param | Type                          | Desc           |                                      |
+| ----- | ----------------------------- | -------------- | ------------------------------------ |
+| opts  | `nil\|three.bufferSelectOpts` |                |                                      |
+|       | delta                         | `nil\|integer` | Offset from current buffer           |
+|       | wrap                          | `nil\|boolean` | If true, wrap around the buffer list |
 
 ### move_buffer(position)
 
@@ -300,51 +300,51 @@ Check if buffer is listed in any tab
 
 `move_buffer_relative(opts)`
 
-| Param | Type    | Desc           |     |
-| ----- | ------- | -------------- | --- |
-| opts  | `table` |                |     |
-|       | delta   | `nil\|integer` |     |
-|       | wrap    | `nil\|boolean` |     |
+| Param | Type                          | Desc           |                                      |
+| ----- | ----------------------------- | -------------- | ------------------------------------ |
+| opts  | `nil\|three.bufferSelectOpts` |                |                                      |
+|       | delta                         | `nil\|integer` | Offset from current buffer           |
+|       | wrap                          | `nil\|boolean` | If true, wrap around the buffer list |
 
 ### move_right(opts)
 
 `move_right(opts)`
 
-| Param | Type    | Desc           |     |
-| ----- | ------- | -------------- | --- |
-| opts  | `table` |                |     |
-|       | delta   | `nil\|integer` |     |
-|       | wrap    | `nil\|boolean` |     |
+| Param | Type                          | Desc           |                                      |
+| ----- | ----------------------------- | -------------- | ------------------------------------ |
+| opts  | `nil\|three.bufferSelectOpts` |                |                                      |
+|       | delta                         | `nil\|integer` | Offset from current buffer           |
+|       | wrap                          | `nil\|boolean` | If true, wrap around the buffer list |
 
 ### move_left(opts)
 
 `move_left(opts)`
 
-| Param | Type    | Desc           |     |
-| ----- | ------- | -------------- | --- |
-| opts  | `table` |                |     |
-|       | delta   | `nil\|integer` |     |
-|       | wrap    | `nil\|boolean` |     |
+| Param | Type                          | Desc           |                                      |
+| ----- | ----------------------------- | -------------- | ------------------------------------ |
+| opts  | `nil\|three.bufferSelectOpts` |                |                                      |
+|       | delta                         | `nil\|integer` | Offset from current buffer           |
+|       | wrap                          | `nil\|boolean` | If true, wrap around the buffer list |
 
 ### next_tab(opts)
 
 `next_tab(opts)`
 
-| Param | Type    | Desc           |     |
-| ----- | ------- | -------------- | --- |
-| opts  | `table` |                |     |
-|       | delta   | `nil\|integer` |     |
-|       | wrap    | `nil\|boolean` |     |
+| Param | Type                          | Desc           |                                      |
+| ----- | ----------------------------- | -------------- | ------------------------------------ |
+| opts  | `nil\|three.bufferSelectOpts` |                |                                      |
+|       | delta                         | `nil\|integer` | Offset from current buffer           |
+|       | wrap                          | `nil\|boolean` | If true, wrap around the buffer list |
 
 ### prev_tab(opts)
 
 `prev_tab(opts)`
 
-| Param | Type    | Desc           |     |
-| ----- | ------- | -------------- | --- |
-| opts  | `table` |                |     |
-|       | delta   | `nil\|integer` |     |
-|       | wrap    | `nil\|boolean` |     |
+| Param | Type                          | Desc           |                                      |
+| ----- | ----------------------------- | -------------- | ------------------------------------ |
+| opts  | `nil\|three.bufferSelectOpts` |                |                                      |
+|       | delta                         | `nil\|integer` | Offset from current buffer           |
+|       | wrap                          | `nil\|boolean` | If true, wrap around the buffer list |
 
 ### jump_to(idx)
 

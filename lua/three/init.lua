@@ -31,40 +31,24 @@ M.restore_state = lazy("bufferline.state", "restore_state")
 ---@return boolean
 M.is_buffer_in_any_tab = lazy("bufferline.state", "is_buffer_in_any_tab")
 ---@param bufnr integer
----@param opts table
----    delta nil|integer
----    wrap nil|boolean
+---@param opts? three.bufferSelectOpts
 ---@return nil|integer
 M.get_relative_buffer = lazy("bufferline.state", "get_relative_buffer")
----@param opts table
----    delta nil|integer
----    wrap nil|boolean
+---@param opts? three.bufferSelectOpts
 M.next = lazy("bufferline.state", "next")
----@param opts table
----    delta nil|integer
----    wrap nil|boolean
+---@param opts? three.bufferSelectOpts
 M.prev = lazy("bufferline.state", "prev")
 ---@param position integer
 M.move_buffer = lazy("bufferline.state", "move_buffer")
----@param opts table
----    delta nil|integer
----    wrap nil|boolean
+---@param opts? three.bufferSelectOpts
 M.move_buffer_relative = lazy("bufferline.state", "move_buffer_relative")
----@param opts table
----    delta nil|integer
----    wrap nil|boolean
+---@param opts? three.bufferSelectOpts
 M.move_right = lazy("bufferline.state", "move_right")
----@param opts table
----    delta nil|integer
----    wrap nil|boolean
+---@param opts? three.bufferSelectOpts
 M.move_left = lazy("bufferline.state", "move_left")
----@param opts table
----    delta nil|integer
----    wrap nil|boolean
+---@param opts? three.bufferSelectOpts
 M.next_tab = lazy("bufferline.state", "next_tab")
----@param opts table
----    delta nil|integer
----    wrap nil|boolean
+---@param opts? three.bufferSelectOpts
 M.prev_tab = lazy("bufferline.state", "prev_tab")
 ---@param idx integer
 M.jump_to = lazy("bufferline.state", "jump_to")

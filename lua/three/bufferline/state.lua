@@ -182,10 +182,12 @@ M.is_buffer_in_any_tab = function(bufnr)
   return false
 end
 
+---@class (exact) three.bufferSelectOpts
+---@field delta nil|integer Offset from current buffer
+---@field wrap nil|boolean If true, wrap around the buffer list
+
 ---@param bufnr integer
----@param opts table
----    delta nil|integer
----    wrap nil|boolean
+---@param opts? three.bufferSelectOpts
 ---@return nil|integer
 M.get_relative_buffer = function(bufnr, opts)
   opts = vim.tbl_extend("keep", opts or {}, {
@@ -210,9 +212,7 @@ M.get_relative_buffer = function(bufnr, opts)
   return ts.buffers[idx]
 end
 
----@param opts table
----    delta nil|integer
----    wrap nil|boolean
+---@param opts? three.bufferSelectOpts
 M.next = function(opts)
   local curbuf = vim.api.nvim_get_current_buf()
   local newbuf = M.get_relative_buffer(curbuf, opts)
@@ -222,9 +222,7 @@ M.next = function(opts)
   end
 end
 
----@param opts table
----    delta nil|integer
----    wrap nil|boolean
+---@param opts? three.bufferSelectOpts
 M.prev = function(opts)
   opts = vim.tbl_extend("keep", opts or {}, {
     delta = 1,
@@ -253,9 +251,7 @@ M.move_buffer = function(position)
   end
 end
 
----@param opts table
----    delta nil|integer
----    wrap nil|boolean
+---@param opts? three.bufferSelectOpts
 M.move_buffer_relative = function(opts)
   opts = vim.tbl_extend("keep", opts or {}, {
     delta = 1,
@@ -275,16 +271,12 @@ M.move_buffer_relative = function(opts)
   end
 end
 
----@param opts table
----    delta nil|integer
----    wrap nil|boolean
+---@param opts? three.bufferSelectOpts
 M.move_right = function(opts)
   M.move_buffer_relative(opts)
 end
 
----@param opts table
----    delta nil|integer
----    wrap nil|boolean
+---@param opts? three.bufferSelectOpts
 M.move_left = function(opts)
   opts = vim.tbl_extend("keep", opts or {}, {
     delta = 1,
@@ -294,7 +286,7 @@ M.move_left = function(opts)
   M.move_buffer_relative(opts)
 end
 
----@param opts nil|{delta: nil|integer, wrap: nil|boolean}
+---@param opts? three.bufferSelectOpts
 local function get_relative_tab(opts)
   opts = vim.tbl_extend("keep", opts or {}, {
     delta = 1,
@@ -316,17 +308,13 @@ local function get_relative_tab(opts)
   return tabpages[idx]
 end
 
----@param opts table
----    delta nil|integer
----    wrap nil|boolean
+---@param opts? three.bufferSelectOpts
 M.next_tab = function(opts)
   local tabpage = get_relative_tab(opts)
   vim.api.nvim_set_current_tabpage(tabpage)
 end
 
----@param opts table
----    delta nil|integer
----    wrap nil|boolean
+---@param opts? three.bufferSelectOpts
 M.prev_tab = function(opts)
   opts = vim.tbl_extend("keep", opts or {}, {
     delta = 1,

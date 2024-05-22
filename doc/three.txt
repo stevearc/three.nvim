@@ -87,23 +87,23 @@ get_relative_buffer({bufnr}, {opts}): nil|integer      *three.get_relative_buffe
 
     Parameters:
       {bufnr} `integer`
-      {opts}  `table`
-          {delta} `nil|integer`
-          {wrap}  `nil|boolean`
+      {opts}  `nil|three.bufferSelectOpts`
+          {delta} `nil|integer` Offset from current buffer
+          {wrap}  `nil|boolean` If true, wrap around the buffer list
 
 next({opts})                                                          *three.next*
 
     Parameters:
-      {opts} `table`
-          {delta} `nil|integer`
-          {wrap}  `nil|boolean`
+      {opts} `nil|three.bufferSelectOpts`
+          {delta} `nil|integer` Offset from current buffer
+          {wrap}  `nil|boolean` If true, wrap around the buffer list
 
 prev({opts})                                                          *three.prev*
 
     Parameters:
-      {opts} `table`
-          {delta} `nil|integer`
-          {wrap}  `nil|boolean`
+      {opts} `nil|three.bufferSelectOpts`
+          {delta} `nil|integer` Offset from current buffer
+          {wrap}  `nil|boolean` If true, wrap around the buffer list
 
 move_buffer({position})                                        *three.move_buffer*
 
@@ -113,37 +113,37 @@ move_buffer({position})                                        *three.move_buffe
 move_buffer_relative({opts})                          *three.move_buffer_relative*
 
     Parameters:
-      {opts} `table`
-          {delta} `nil|integer`
-          {wrap}  `nil|boolean`
+      {opts} `nil|three.bufferSelectOpts`
+          {delta} `nil|integer` Offset from current buffer
+          {wrap}  `nil|boolean` If true, wrap around the buffer list
 
 move_right({opts})                                              *three.move_right*
 
     Parameters:
-      {opts} `table`
-          {delta} `nil|integer`
-          {wrap}  `nil|boolean`
+      {opts} `nil|three.bufferSelectOpts`
+          {delta} `nil|integer` Offset from current buffer
+          {wrap}  `nil|boolean` If true, wrap around the buffer list
 
 move_left({opts})                                                *three.move_left*
 
     Parameters:
-      {opts} `table`
-          {delta} `nil|integer`
-          {wrap}  `nil|boolean`
+      {opts} `nil|three.bufferSelectOpts`
+          {delta} `nil|integer` Offset from current buffer
+          {wrap}  `nil|boolean` If true, wrap around the buffer list
 
 next_tab({opts})                                                  *three.next_tab*
 
     Parameters:
-      {opts} `table`
-          {delta} `nil|integer`
-          {wrap}  `nil|boolean`
+      {opts} `nil|three.bufferSelectOpts`
+          {delta} `nil|integer` Offset from current buffer
+          {wrap}  `nil|boolean` If true, wrap around the buffer list
 
 prev_tab({opts})                                                  *three.prev_tab*
 
     Parameters:
-      {opts} `table`
-          {delta} `nil|integer`
-          {wrap}  `nil|boolean`
+      {opts} `nil|three.bufferSelectOpts`
+          {delta} `nil|integer` Offset from current buffer
+          {wrap}  `nil|boolean` If true, wrap around the buffer list
 
 jump_to({idx})                                                     *three.jump_to*
 
