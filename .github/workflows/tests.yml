@@ -13,7 +13,7 @@ jobs:
     name: Luacheck
     runs-on: self-hosted-ubuntu
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
 
       - name: Prepare
         run: |
@@ -29,7 +29,7 @@ jobs:
     name: typecheck
     runs-on: self-hosted-ubuntu
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       - uses: stevearc/nvim-typecheck-action@v2
         with:
           path: lua
@@ -38,12 +38,12 @@ jobs:
     name: StyLua
     runs-on: self-hosted-ubuntu
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       - name: Stylua
-        uses: JohnnyMorganz/stylua-action@v4
+        uses: JohnnyMorganz/stylua-action@v5
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
-          version: v2.0.2
+          version: v2.4.1
           args: --check lua tests
 
   run_tests:
@@ -52,15 +52,16 @@ jobs:
         include:
           - nvim_tag: v0.8.3
           - nvim_tag: v0.9.4
-          - nvim_tag: v0.10.0
           - nvim_tag: v0.10.4
+          - nvim_tag: v0.11.5
+          - nvim_tag: v0.12.2
 
     name: Run tests
     runs-on: self-hosted-ubuntu
     env:
       NVIM_TAG: ${{ matrix.nvim_tag }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
 
       - name: Install Neovim and dependencies
         run: |
@@ -74,7 +75,7 @@ jobs:
     name: Update docs
     runs-on: self-hosted-ubuntu
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
 
       - name: Install Neovim and dependencies
         run: |
