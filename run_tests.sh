@@ -20,6 +20,5 @@ XDG_CONFIG_HOME=".testenv/config" \
   XDG_RUNTIME_DIR=".testenv/run" \
   XDG_CACHE_HOME=".testenv/cache" \
   nvim --headless -u tests/minimal_init.lua \
-  -c "TSUpdateSync" \
   -c "PlenaryBustedDirectory ${1-tests} { minimal_init = './tests/minimal_init.lua' }"
 echo "Success"

@@ -158,7 +158,8 @@ local function add_padding(buf_data, width)
     end
     iter = iter + 1
     if iter > 20 then
-      vim.api.nvim_err_writeln("[three.nvim] Infinite loop in add_padding (please report)")
+      local msg = "[three.nvim] Infinite loop in add_padding (please report)"
+      vim.api.nvim_echo({ { msg } }, true, { err = true })
       break
     end
   end

@@ -122,7 +122,7 @@ M.render = function()
   if ok then
     return ret
   else
-    vim.api.nvim_err_writeln(ret)
+    vim.api.nvim_echo({ { ret } }, true, { err = true })
     return ""
   end
 end

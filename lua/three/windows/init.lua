@@ -164,6 +164,7 @@ local function resize_windows()
   end
   local layout = vim.fn.winlayout()
   set_winlayout_data(layout)
+  ---@diagnostic disable-next-line: inject-field
   layout[2].width = vim.o.columns
   local editor_height = vim.o.lines - vim.o.cmdheight
   if vim.o.showtabline == 2 or (vim.o.showtabline == 1 and #vim.api.nvim_list_tabpages() > 1) then
@@ -174,6 +175,7 @@ local function resize_windows()
   then
     editor_height = editor_height - 1
   end
+  ---@diagnostic disable-next-line: inject-field
   layout[2].height = editor_height
   set_dimensions(layout)
 end
